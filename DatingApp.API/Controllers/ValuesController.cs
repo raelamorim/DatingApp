@@ -1,56 +1,71 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using DatingApp.API.Data;
+using DatingApp.API.Data.Repositories;
+using DatingApp.API.Dtos;
+using DatingApp.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IValueRepository _repo;
 
-        public ValuesController(DataContext context)
+        public ValuesController(IValueRepository repo)
         {
-            _context = context;
+            this._repo = repo;
         }
 
         // GET api/values
         [HttpGet]
         public async Task<IActionResult> GetValues()
         {
-            var values = await _context.Values.ToListAsync();
-            return Ok(values);
+            return Ok(await _repo.findAll());
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetValue(int id)
         {
-            var values = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
-            return Ok(values);
+            return Ok(await _repo.findById(id));
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(ValueForPostDto valueForPostDto)
         {
+            var valueToCreate = new Value() {
+                Name = valueForPostDto.Name
+            };
+            
+            await _repo.create(valueToCreate);
+            return Created("api/values/", valueToCreate);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, ValueForPutDto valueForPutDto)
         {
+            var valueToUpdate = new Value() {
+                Id = id,
+                Name = valueForPutDto.Name
+            };
+
+            await _repo.updateById(valueToUpdate);
+            return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await _repo.deleteById(id);
+            return Ok();
         }
     }
 }
