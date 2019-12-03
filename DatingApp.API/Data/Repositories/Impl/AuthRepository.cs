@@ -1,14 +1,4 @@
 using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using System.Diagnostics;
-using System.Reflection.Metadata;
-using System.IO.Enumeration;
-using System.IO;
-using System.Security.Cryptography;
-using System.Security.AccessControl;
-using System;
-using System.Runtime.CompilerServices;
-using System.Globalization;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 

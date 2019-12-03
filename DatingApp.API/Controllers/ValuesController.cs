@@ -4,7 +4,6 @@ using DatingApp.API.Dtos;
 using DatingApp.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Controllers
 {
@@ -22,6 +21,7 @@ namespace DatingApp.API.Controllers
 
         // GET api/values
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetValues()
         {
             return Ok(await _repo.findAll());
